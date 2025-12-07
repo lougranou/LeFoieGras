@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuisson précise du Foie Gras</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <style>
+        /* PRIVACY NOTE: All CSS is self-contained. No external URLs loaded. */
+
+        :root {
+            /* Theme adapted to Mallard & Forest colors */
+            --primary: #14532d; /* Deep Forest Green (replaces Amber-600) */
+            --primary-dark: #052e16;
+            --accent: #d97706; /* Amber accent for highlights (duck feet/beak color) */
+            
+            /* Background overlay for contrast against the image */
+            --bg-overlay: rgba(0, 30, 10, 0.5);
+            
+            /* Frosted Glass Card Background */
+            --card-bg: rgba(255, 255, 255, 0.85); 
+            
+            --text-main: #1c1917; /* Stone-900 for sharper contrast */
+            --text-muted: #57534e; /* Stone-600 */
+            --border-color: rgba(0, 0, 0, 0.1); /* Subtle border for glass effect */
+        }
+
+        body {
+            /* System Font Stack */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            
+            /* Setup Nature Background Image */
+            background-image: url('background.jpg');
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            
+            /* Dark overlay using box-shadow inset technique to ensure text pop */
+            box-shadow: inset 0 0 0 2000px var(--bg-overlay);
+            
+            color: var(--text-main);
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            /* --- MODIFICATION START --- */
+            justify-content: flex-end; /* Push content to the right */
+            align-items: flex-start;   /* Align content to the top */
+            padding: 2rem; /* More generous padding around the card */
+            padding-top: 5vh; /* Push it down a bit from the top */
+            /* --- MODIFICATION END --- */
+        }
+
+        /* Card Container - Frosted Glass Effect */
+        .card {
+            background-color: var(--card-bg);
+            /* The blur effect for frosted glass */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            
+            width: 100%;
+            /* --- MODIFICATION START --- */
+            max-width: 380px; /* Slightly reduce max-width to be less intrusive */
+            /* --- MODIFICATION END --- */
+            border-radius: 1rem;
+            /* Softer shadow and subtle border for glass look */
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            overflow: hidden;
+        }
+
+        /* Header Area */
+        .header {
+            height: 140px;
+            background-color: var(--primary);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            /* Subtle pattern overlay */
+            background-image: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-bottom: 3px solid var(--accent);
+        }
+
+        .header h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin: 0.5rem 0 0 0;
+            letter-spacing: 0.025em;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .icon {
+            width: 48px;
+            height: 48px;
+            stroke-width: 2;
+            stroke: currentColor;
+            fill: none;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+
+        /* Content Area */
+        .content {
+            padding: 2rem;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            margin-top: 0;
+        }
+
+        /* Input Styling */
+        .input-group {
+            margin-bottom: 2rem;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--primary); /* Use primary color for label */
+            margin-bottom: 0.5rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 1rem 3rem 1rem 1rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            border: 2px solid var(--border-color);
+            background-color: rgba(255, 255, 255, 0.9); /* Slightly more opaque than card */
+            border-radius: 0.75rem;
+            outline: none;
+            transition: all 0.2s ease;
+            -moz-appearance: textfield;
+        }
+
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Focus state uses the amber accent color for pop */
+        input[type="number"]:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.2);
+        }
+
+        .unit-label {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-weight: 600;
+            pointer-events: none;
+        }
+
+        /* Result Display */
+        .result-card {
+            background-color: rgba(255, 255, 255, 0.5); /* Subtle contrast against main card */
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            opacity: 0.5;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateY(10px); /* Slight movement animation */
+        }
+
+        .result-card.active {
+            opacity: 1;
+            transform: translateY(0);
+            background-color: rgba(255, 255, 255, 0.8);
+            border-color: var(--primary);
+        }
+
+        .result-title {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin: 0 0 0.5rem 0;
+        }
+
+        .timer-display {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 0.5rem;
+            color: var(--primary); /* Numbers are now forest green */
+        }
+
+        .time-unit {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .number {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1;
+            font-variant-numeric: tabular-nums; /* Prevents jumping when numbers change */
+        }
+
+        .label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: var(--accent); /* Labels are amber accent */
+            margin-top: 0.25rem;
+            letter-spacing: 0.1em;
+        }
+
+        .separator {
+            font-size: 2.5rem;
+            font-weight: 300;
+            color: var(--accent);
+            transform: translateY(-12px);
+            opacity: 0.7;
+        }
+
+        .hint {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: white; /* White text to pop against dark background overlay */
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+            font-style: italic;
+            opacity: 0.9;
+            /* --- MODIFICATION START --- */
+            position: absolute; /* Position hint independently */
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 500px; /* Constrain width for readability */
+            /* --- MODIFICATION END --- */
+        }
+
+        /* --- NEW ADDITION: Responsive adjustments for smaller screens --- */
+        @media (max-width: 768px) {
+            body {
+                justify-content: center; /* Center card on smaller screens */
+                align-items: center;
+                padding: 1rem;
+            }
+            .card {
+                max-width: 90%; /* Allow card to be wider on small screens */
+            }
+            .hint {
+                position: static; /* Let hint flow normally on small screens */
+                transform: none;
+                margin-top: 1rem;
+                padding: 0 1rem; /* Add some horizontal padding */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="header">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12 6V12L16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <h1>Le Foie Gras</h1>
+        </div>
+
+        <div class="content">
+            <p class="subtitle">Caluclateur de cuisson</p>
+
+            <div class="input-group">
+                <label for="weight" class="input-label">Poids</label>
+                <div class="input-wrapper">
+                    <input type="number" id="weight" placeholder="0" oninput="calculateTime()" autocomplete="off">
+                    <span class="unit-label">grammes</span>
+                </div>
+            </div>
+
+            <div id="result-card" class="result-card">
+                <h2 class="result-title">Temps de cuisson</h2>
+                
+                <div class="timer-display">
+                    <div class="time-unit">
+                        <span id="min-val" class="number">0</span>
+                        <span class="label">Minutes</span>
+                    </div>
+                    <span class="separator">:</span>
+                    <div class="time-unit">
+                        <span id="sec-val" class="number">00</span>
+                        <span class="label">Secondes</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="hint">
+        Le secret de la précision, basé sur l'authentique recette de Rebecca
+    </div>
+
+    <script>
+        // (JavaScript logic remains unchanged)
+        function calculateTime() {
+            const weightInput = document.getElementById('weight');
+            const resultCard = document.getElementById('result-card');
+            const minDisplay = document.getElementById('min-val');
+            const secDisplay = document.getElementById('sec-val');
+            
+            const x = parseFloat(weightInput.value);
+
+            // Check if input is valid
+            if (!x || x <= 0) {
+                resultCard.classList.remove('active');
+                // Optional: delay resetting numbers for smoother UX during backspacing
+                setTimeout(() => {
+                     if (!weightInput.value || parseFloat(weightInput.value) <= 0) {
+                        minDisplay.textContent = "0";
+                        secDisplay.textContent = "00";
+                     }
+                }, 300);
+                return;
+            }
+
+            // Calculation Logic: (Weight in g * 14 mins) / 1000g
+            // Result is total minutes in decimal form
+            const totalMinutesFloat = (x * 14) / 1000;
+            
+            const minutes = Math.floor(totalMinutesFloat);
+            const remainder = totalMinutesFloat - minutes;
+            // Convert remainder part of a minute to seconds
+            const seconds = Math.round(remainder * 60); // Changed floor to round for better accuracy at boundaries
+
+            // Handle edge case where rounding seconds results in 60
+            let finalMins = minutes;
+            let finalSecs = seconds;
+            if (finalSecs === 60) {
+                finalMins += 1;
+                finalSecs = 0;
+            }
+
+            // Update UI
+            resultCard.classList.add('active');
+            minDisplay.textContent = finalMins;
+            // Pad seconds with leading zero if needed
+            secDisplay.textContent = finalSecs.toString().padStart(2, '0');
+        }
+    </script>
+</body>
+</html>
